@@ -3,12 +3,12 @@ from typing import List
 import cv2
 from cv2.typing import MatLike
 import shutil
-from settings import GLOBAL_PATH
+from settings import GLOBAL_PATH, IMAGES_PATH
 
 
 def save_images(
     images_to_save: List[MatLike],
-    path:str=f"{GLOBAL_PATH}/proyect/images/regioned",
+    path:str=IMAGES_PATH+"regioned/",
     extra:str="",
     cv2Const:int=None
 ) -> None:
@@ -31,7 +31,7 @@ def save_images(
         cv2.imwrite(f"{path}/{extra}{i:0>5}.png",img)
         
 def read_images(
-    path:str=f"{GLOBAL_PATH}/proyect/images/test/",
+    path:str=IMAGES_PATH+"test/",
     start:int=0,
     end:int=20,
     cv2Const:int=cv2.COLOR_BGR2RGB
@@ -65,7 +65,7 @@ def read_images(
     ][start:end]
 
 def remove_directory_content(
-    path:str=f"{GLOBAL_PATH}/proyect/images/regioned/"
+    path:str=IMAGES_PATH+"regioned/"
 ) -> None:
     """
     Removes the content of a directory.

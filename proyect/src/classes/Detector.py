@@ -4,9 +4,7 @@ from cv2.typing import Rect
 import cv2
 from cv2.typing import MatLike
 import numpy as np
-
 from settings import *
-
 
 class Detector:
     
@@ -14,7 +12,10 @@ class Detector:
     upper_blue = np.array([130,255,255])
 
     
-    def __init__(self,images:List[MatLike]) -> None:
+    def __init__(
+        self,
+        images:List[MatLike]
+    ) -> None:
         """
         Initialize the instance of the Detector class.
         
@@ -25,10 +26,12 @@ class Detector:
         """
         self.__images: List[MatLike] = images  
         self.__gray_images: List[MatLike] = [cv2.cvtColor(img,cv2.COLOR_RGB2GRAY) for img in self.__images]
-        self.__nImages = len(self.__images)
+        self.__nImages: int = len(self.__images)
         self.__mser: cv2.MSER = cv2.MSER_create(delta=DELTA, min_area=MIN_AREA, max_area=MAX_AREA, max_variation=MAX_VARIATION, min_diversity=MIN_DIVERSITY)
     
-    def improve_contrast(self) -> None:
+    def improve_contrast(
+        self
+    ) -> None:
         """
         Adjusts the contrast of each image in the dataset using the histogram equalize.
         
@@ -42,7 +45,9 @@ class Detector:
 
     @property
     @lru_cache
-    def list_images_regions(self) -> list[tuple[List[Rect],int]]:
+    def list_images_regions(
+        self
+    ) -> list[tuple[List[Rect],int]]:
         """
         Returns a list of tuples, where each tuple contains a list of rectangles and the index of the image they belong to.
 
@@ -60,12 +65,14 @@ class Detector:
         """
         return [
             (self.__mser.detectRegions(self.__gray_images[idx])[1],idx) #Create a sequence of rectangles
-            for idx in range(len(self.__gray_images))
+            for idx in range(self.__nImages)
         ]
         
     @property
     @lru_cache
-    def groupped_images_regions(self) -> List[tuple[List[Rect],int]]:
+    def groupped_images_regions(
+        self
+    ) -> List[tuple[List[Rect],int]]:
         """
         Returns a list of tuples, where each tuple contains a list of rectangles and the index of the image they belong to.
 
@@ -89,7 +96,9 @@ class Detector:
         
     @property
     @lru_cache
-    def filter_images_regions(self) -> List[tuple[List[Rect],int]]:
+    def filter_images_regions(
+        self
+    ) -> List[tuple[List[Rect],int]]:
         """
         Returns a list of tuples, where each pass a filter on the rectangles.
         
@@ -103,9 +112,9 @@ class Detector:
         list[tuple[List[Rect], int]]
             A list of tuples, where each tuple contains a list of rectangles and the index of the image they belong to.
         """
-        filter_images = []
+        filter_images: List[tuple[List[Rect],int]] = []
         for groupped in self.groupped_images_regions:
-            filter_rects = []
+            filter_rects: List[Rect] = []
             for rect in groupped[0]:
                 x, y, w, h = rect
                 aspect_ratio = float(w) / h
@@ -119,12 +128,15 @@ class Detector:
                             y=y-ENLARGE_HEIGHT if y-ENLARGE_HEIGHT>=0 else 0
                             w=w+ENLARGE_WIDTH*2 if w+ENLARGE_WIDTH*2<=max_image_width else max_image_width
                             h=h+ENLARGE_HEIGHT*2 if h+ENLARGE_HEIGHT*2<=max_image_height else max_image_height
-                            rect = x,y,w,h
+                            rect: Rect = x,y,w,h
                             filter_rects.append(rect)
             filter_images.append((filter_rects,groupped[1]))
         return filter_images
     
-    def draw_regions(self,regions:List[tuple[List[Rect],int]]) -> List[MatLike]:
+    def draw_regions(
+        self,
+        regions:List[tuple[List[Rect],int]]
+    ) -> List[MatLike]:
         """
         Draws bounding boxes on the images in the dataset.
 
@@ -140,7 +152,7 @@ class Detector:
         List[MatLike]
             A list of the images with bounding boxes drawn on them.
         """
-        images_copy = []
+        images_copy: List[MatLike] = []
         for img in self.__images:
             images_copy.append(img.copy())
         for regions,idx in regions:
@@ -148,7 +160,10 @@ class Detector:
                 cv2.rectangle(images_copy[idx],(x,y),(x+w, y+h),COLOR_BORDER,THICKNESS)
         return images_copy
     
-    def crop_regions(self,regions: List[tuple[List[Rect],int]]) -> List[tuple[tuple[List[MatLike],List[Rect]],int]]:
+    def crop_regions(
+        self,
+        regions: List[tuple[List[Rect],int]]
+    ) -> List[tuple[List[tuple[MatLike,Rect]],int]]:
         """
         Crops the regions of interest from the input images.
 
@@ -161,8 +176,8 @@ class Detector:
 
         Returns:
         --------
-        List[Tuple[List[MatLike], int]]
-            A list of tuples, where each tuple contains the cropped image and the index of the image it belongs to.
+        List[tuple[List[tuple[MatLike,Rect]],int]]
+            A list of tuples, where each tuple contains a list of cropped images and its regions and the index of the image it belongs to.
         """
         cropped_images = []
         for regions_c,idx in regions:
@@ -174,11 +189,28 @@ class Detector:
             cropped_images.append((cropped_index_images,idx))
         return cropped_images
         
-    def apply_filter_cropped(self,cropped_images:List[tuple[tuple[List[MatLike],List[Rect]],int]])-> List[tuple[List[MatLike],int,List[Rect]]]:
-        cropped_mask = []
+    def apply_filter_cropped(
+        self,
+        cropped_images:List[tuple[List[tuple[MatLike,Rect]],int]]
+    )-> List[tuple[List[tuple[MatLike,Rect]],int]]:
+        """
+        Filter cropped images by a mask, and it percentage of relative non black pixels.
+
+        Parameters:
+        -----------
+        self : Detector
+            The instance of the Detector class.
+        cropped_images : List[tuple[List[tuple[MatLike,Rect]],int]]
+            A list of tuples, where each tuple contains a list of cropped images and its regions and the index of the image it belongs to.
+
+        Returns:
+        --------
+        List[tuple[List[tuple[MatLike,Rect]],int]]
+            A list of tuples, where each tuple contains a list of cropped filter images and its regions and the index of the image it belongs to.
+        """
+        cropped_mask:List[tuple[List[tuple[MatLike,Rect]],int]] = []
         for croppeds,idx in cropped_images:
-            cropped_image=[]
-            region_final = []
+            croppeds_image: List[tuple[MatLike,Rect]]=[]
             for cropped,region in croppeds:
                 hsv_cropped = cv2.cvtColor(cropped,cv2.COLOR_RGB2HSV)
                 mask = cv2.inRange(hsv_cropped,self.lower_blue,self.upper_blue)
@@ -190,12 +222,17 @@ class Detector:
                 # Calcular el porcentaje de píxeles negros
                 porcentaje = (pxeles_negros / total_pixeles) * 100
                 if porcentaje < 14:
-                    cropped_image.append(bitwise)
-                    region_final.append(region)
-            cropped_mask.append((cropped_image,idx,region_final))
+                    croppeds_image.append((bitwise,region))
+            cropped_mask.append((croppeds_image,idx))
         return cropped_mask
     
-    def draw_final_regions(images,regions:List[tuple[List[MatLike],int,List[Rect]]]):
-        for img,i,reg in regions:
-            x, y, w, h = reg
-            cv2.rectangle(images[i], (x,y), (x+w, y+h), (0,255,0), 2)   
+    def draw_final_regions(
+        self,
+        dest_images:List[MatLike],
+        cropped_filter_images:List[tuple[List[tuple[MatLike,Rect]],int]]
+    ) -> List[MatLike]:
+        for tuple,idx in cropped_filter_images:
+            for _,reg in tuple:
+                x,y,w,h=reg
+                cv2.rectangle(dest_images[idx],(x,y),(x+w,y+h),COLOR_BORDER,THICKNESS)
+        return dest_images

@@ -1,0 +1,5 @@
+./proyect/images/cropped/*
+./proyect/images/cropped_mask/*
+./proyect/images/regioned/*
+./proyect/images/final_regioned/*
+./proyect/images/test/*
