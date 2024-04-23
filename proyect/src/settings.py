@@ -1,5 +1,9 @@
+import os
+
 #---FileFuncs:
-GLOBAL_PATH = "D:/Programming/Repositorios/Practica1VisionArtificial"
+GLOBAL_PATH = os.path.abspath(__file__).replace("\\settings.py","")+"/../../"
+IMAGES_PATH = GLOBAL_PATH + "proyect/images/"
+
 
 #---Detector:
 
