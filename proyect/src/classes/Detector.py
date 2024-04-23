@@ -148,7 +148,7 @@ class Detector:
                 cv2.rectangle(images_copy[idx],(x,y),(x+w, y+h),COLOR_BORDER,THICKNESS)
         return images_copy
     
-    def crop_regions(self,regions: List[tuple[List[Rect],int]]) -> List[tuple[List[MatLike],int]]:
+    def crop_regions(self,regions: List[tuple[List[Rect],int]]) -> List[tuple[tuple[List[MatLike],List[Rect]],int]]:
         """
         Crops the regions of interest from the input images.
 
@@ -166,19 +166,20 @@ class Detector:
         """
         cropped_images = []
         for regions_c,idx in regions:
-            cropped_index_images = []
+            cropped_index_images = []            
             for region in regions_c:
                 x, y, w, h = region  
                 cropped_image: MatLike = cv2.resize(self.__images[idx][y:y+h,x:x+w],CROPPED_TAM)
-                cropped_index_images.append(cropped_image)
+                cropped_index_images.append((cropped_image,region))
             cropped_images.append((cropped_index_images,idx))
         return cropped_images
         
-    def apply_filter_cropped(self,cropped_images:List[tuple[List[MatLike],int]])-> List[tuple[List[MatLike],int]]:
+    def apply_filter_cropped(self,cropped_images:List[tuple[tuple[List[MatLike],List[Rect]],int]])-> List[tuple[List[MatLike],int,List[Rect]]]:
         cropped_mask = []
         for croppeds,idx in cropped_images:
             cropped_image=[]
-            for cropped in croppeds:
+            region_final = []
+            for cropped,region in croppeds:
                 hsv_cropped = cv2.cvtColor(cropped,cv2.COLOR_RGB2HSV)
                 mask = cv2.inRange(hsv_cropped,self.lower_blue,self.upper_blue)
                 bitwise = cv2.cvtColor(cv2.cvtColor(cv2.bitwise_and(hsv_cropped,hsv_cropped,mask=mask),cv2.COLOR_HSV2BGR),cv2.COLOR_BGR2RGB)
@@ -190,5 +191,11 @@ class Detector:
                 porcentaje = (pxeles_negros / total_pixeles) * 100
                 if porcentaje < 14:
                     cropped_image.append(bitwise)
-            cropped_mask.append((cropped_image,idx))
+                    region_final.append(region)
+            cropped_mask.append((cropped_image,idx,region_final))
         return cropped_mask
+    
+    def draw_final_regions(images,regions:List[tuple[List[MatLike],int,List[Rect]]]):
+        for img,i,reg in regions:
+            x, y, w, h = reg
+            cv2.rectangle(images[i], (x,y), (x+w, y+h), (0,255,0), 2)   
