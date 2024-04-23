@@ -15,6 +15,7 @@ if __name__ == "__main__":
     
     #Leer las imagenes:
     images: List[MatLike] = ff.read_images(end=10)
+    images2: List[MatLike] = ff.read_images(end=10)
     
     #Crear el detector y mejorar el contraste:
     det: Detector = Detector(images)
@@ -28,7 +29,7 @@ if __name__ == "__main__":
     
     #Recortar las regiones y guardarlas:
     cropped_images = det.crop_regions(filter_regions)
-    for crops,idx in cropped_images:
+    for crops,idx,region in cropped_images:
         ff.save_images(crops,cv2Const=cv2.COLOR_BGR2RGB,extra=f"{idx}-",path=f"{GLOBAL_PATH}/proyect/images/cropped")
         
     #Aplicamos mascara:
@@ -36,4 +37,5 @@ if __name__ == "__main__":
     for crops_mask,idx in cropped_mask_images:
         ff.save_images(crops_mask,cv2Const=None,extra=f"{idx}-",path=f"{GLOBAL_PATH}/proyect/images/cropped_mask")
     
-    
+    det.draw_final_regions(images2,cropped_mask_images)
+    ff.save_images(images2,cv2Const=None,extra=f"{idx}-",path=f"{GLOBAL_PATH}/proyect/images/test")
