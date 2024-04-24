@@ -119,8 +119,8 @@ class Detector:
                 x, y, w, h = rect
                 aspect_ratio = float(w) / h
                 if MIN_RATIO < aspect_ratio < MAX_RATIO:
-                    if w < MAX_WIDTH:
-                        if h < MAX_HEIGHT:
+                    if w <= MAX_WIDTH and h <= MAX_HEIGHT:
+                        if w >= MIN_WIDTH and h >= MIN_HEIGHT: 
                             #Enlarge the region
                             max_image_width = self.__images[groupped[1]].shape[1]
                             max_image_height = self.__images[groupped[1]].shape[0]
@@ -221,7 +221,7 @@ class Detector:
                 pxeles_negros = total_pixeles - cv2.countNonZero(gris)
                 # Calcular el porcentaje de píxeles negros
                 porcentaje = (pxeles_negros / total_pixeles) * 100
-                if porcentaje < 14:
+                if porcentaje < 16:
                     croppeds_image.append((bitwise,region))
             cropped_mask.append((croppeds_image,idx))
         return cropped_mask
