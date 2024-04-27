@@ -81,3 +81,10 @@ def remove_directory_content(
             os.remove(path_complete)
         elif os.path.isdir(path_complete):
             shutil.rmtree(path_complete)
+
+def create_txt(path:str,text:str):    
+    if os.path.exists(path):
+        os.remove(path)    
+
+    with open(path, 'w') as file:
+        file.write(text)
