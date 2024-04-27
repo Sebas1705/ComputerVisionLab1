@@ -6,6 +6,7 @@ import cv2
 from common import FileFuncs as ff
 from classes.Detector import Detector
 from settings import IMAGES_PATH
+from settings import FILES_PATH
 
 class Tester:
     
@@ -45,5 +46,7 @@ class Tester:
             imgs = [img for img,_ in crops_mask]
             ff.save_images(imgs,extra=f"{idx}-",path=IMAGES_PATH+"cropped_mask/")
         
-        det.draw_final_regions(images_final_regioned,cropped_mask_images)
+        text = det.draw_final_regions(images_final_regioned,cropped_mask_images)
         ff.save_images(images_final_regioned,cv2Const=cv2.COLOR_BGR2RGB,path=IMAGES_PATH+"final_regioned/")
+
+        ff.create_txt(FILES_PATH+"exit.txt",text)

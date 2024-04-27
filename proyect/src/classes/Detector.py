@@ -221,7 +221,7 @@ class Detector:
                 pxeles_negros = total_pixeles - cv2.countNonZero(gris)
                 # Calcular el porcentaje de píxeles negros
                 porcentaje = (pxeles_negros / total_pixeles) * 100
-                if porcentaje < 14:
+                if porcentaje < 13:
                     croppeds_image.append((bitwise,region))
             cropped_mask.append((croppeds_image,idx))
         return cropped_mask
@@ -230,9 +230,11 @@ class Detector:
         self,
         dest_images:List[MatLike],
         cropped_filter_images:List[tuple[List[tuple[MatLike,Rect]],int]]
-    ) -> List[MatLike]:
+    ) -> str:
+        string = ''
         for tuple,idx in cropped_filter_images:
             for _,reg in tuple:
                 x,y,w,h=reg
                 cv2.rectangle(dest_images[idx],(x,y),(x+w,y+h),COLOR_BORDER,THICKNESS)
-        return dest_images
+                string = string + str(idx) + ';' + str(x) + ';' + str(y) + ';' + str(x+w) + ';' + str(y+h)  + '\n'                
+        return string
