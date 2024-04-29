@@ -5,13 +5,13 @@ import cv2
 from cv2.typing import MatLike
 import numpy as np
 from settings import *
+import common.FileFuncs as ff
 
 class Detector:
     
     lower_blue = np.array([100,50,60])
     upper_blue = np.array([130,255,255])
 
-    
     def __init__(
         self,
         images:List[MatLike]
@@ -25,9 +25,15 @@ class Detector:
             The list of input images.
         """
         self.__images: List[MatLike] = images  
-        self.__gray_images: List[MatLike] = [cv2.cvtColor(img,cv2.COLOR_RGB2GRAY) for img in self.__images]
+        self.gray_images: List[MatLike] = [cv2.cvtColor(img,cv2.COLOR_RGB2GRAY) for img in self.__images]
         self.__nImages: int = len(self.__images)
-        self.__mser: cv2.MSER = cv2.MSER_create(delta=DELTA, min_area=MIN_AREA, max_area=MAX_AREA, max_variation=MAX_VARIATION, min_diversity=MIN_DIVERSITY)
+        self.__mser: cv2.MSER = cv2.MSER_create(
+            delta=DELTA, 
+            min_area=MIN_AREA, 
+            max_area=MAX_AREA, 
+            max_variation=MAX_VARIATION, 
+            min_diversity=MIN_DIVERSITY
+        )
     
     def improve_contrast(
         self
@@ -41,7 +47,7 @@ class Detector:
             The instance of the Detector class.
         """
         for i in range(self.__nImages):
-            self.__gray_images[i] = cv2.equalizeHist(self.__gray_images[i])
+            self.gray_images[i] = cv2.equalizeHist(self.gray_images[i])
 
     @property
     @lru_cache
@@ -64,7 +70,7 @@ class Detector:
             A list of tuples, where each tuple contains a list of rectangles and the index of the image they belong to.
         """
         return [
-            (self.__mser.detectRegions(self.__gray_images[idx])[1],idx) #Create a sequence of rectangles
+            (self.__mser.detectRegions(self.gray_images[idx])[1],idx) #Create a sequence of rectangles
             for idx in range(self.__nImages)
         ]
         
@@ -119,8 +125,7 @@ class Detector:
                 x, y, w, h = rect
                 aspect_ratio = float(w) / h
                 if MIN_RATIO < aspect_ratio < MAX_RATIO:
-                    if w <= MAX_WIDTH and h <= MAX_HEIGHT:
-                        if w >= MIN_WIDTH and h >= MIN_HEIGHT: 
+                    if w <= MAX_WIDTH and h <= MAX_HEIGHT:                        
                             #Enlarge the region
                             max_image_width = self.__images[groupped[1]].shape[1]
                             max_image_height = self.__images[groupped[1]].shape[0]
@@ -221,7 +226,7 @@ class Detector:
                 pxeles_negros = total_pixeles - cv2.countNonZero(gris)
                 # Calcular el porcentaje de píxeles negros
                 porcentaje = (pxeles_negros / total_pixeles) * 100
-                if porcentaje < 16:
+                if porcentaje < 13:
                     croppeds_image.append((bitwise,region))
             cropped_mask.append((croppeds_image,idx))
         return cropped_mask
@@ -230,9 +235,11 @@ class Detector:
         self,
         dest_images:List[MatLike],
         cropped_filter_images:List[tuple[List[tuple[MatLike,Rect]],int]]
-    ) -> List[MatLike]:
+    ) -> str:
+        string = ''
         for tuple,idx in cropped_filter_images:
             for _,reg in tuple:
                 x,y,w,h=reg
                 cv2.rectangle(dest_images[idx],(x,y),(x+w,y+h),COLOR_BORDER,THICKNESS)
-        return dest_images
+                string = string + str(idx) + ';' + str(x) + ';' + str(y) + ';' + str(x+w) + ';' + str(y+h)  + '\n'                
+        return string

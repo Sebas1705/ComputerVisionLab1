@@ -3,6 +3,7 @@ import os
 #---FileFuncs:
 GLOBAL_PATH = os.path.abspath(__file__).replace("\\settings.py","")+"/../../"
 IMAGES_PATH = GLOBAL_PATH + "proyect/images/"
+FILES_PATH = GLOBAL_PATH + "proyect/files/"
 
 
 #---Detector:
@@ -29,7 +30,7 @@ ENLARGE_WIDTH = 5
 ENLARGE_HEIGHT = 5
 
 #Regions Drawer:
-COLOR_BORDER = (0,0,0)
+COLOR_BORDER = (0,255,0)
 THICKNESS = 1
 
 #Cropped:
