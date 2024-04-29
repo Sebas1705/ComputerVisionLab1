@@ -36,7 +36,8 @@ class Detector:
         )
     
     def improve_contrast(
-        self
+        self,
+        images: List[MatLike]
     ) -> None:
         """
         Adjusts the contrast of each image in the dataset using the histogram equalize.
@@ -45,9 +46,11 @@ class Detector:
         -----------
         self : Detector
             The instance of the Detector class.
+        images: List[MatLike]
+            The list of images to improve
         """
         for i in range(self.__nImages):
-            self.gray_images[i] = cv2.equalizeHist(self.gray_images[i])
+            images[i] = cv2.equalizeHist(images[i])
 
     @property
     @lru_cache
