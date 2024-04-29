@@ -1,5 +1,9 @@
 from classes.Tester import Tester
+import common.FileFuncs as ff
+from settings import *
 
 if __name__ == "__main__":
+    
+    images = ff.read_images()
     tester: Tester = Tester()
-    tester.exec_general_test(startIndex=20,endIndex=40)
+    tester.exec_general_test(images)
