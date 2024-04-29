@@ -25,7 +25,7 @@ class Tester:
         
         #Mejorar las imagenes en grises
         ff.save_images(det.gray_images,path=IMAGES_PATH+"a_gray_before/")
-        det.improve_contrast()
+        det.improve_contrast(det.gray_images)
         ff.save_images(det.gray_images,path=IMAGES_PATH+"b_gray_after/")
         
         #Recoger las regiones:
