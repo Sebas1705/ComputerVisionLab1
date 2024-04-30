@@ -13,7 +13,7 @@ class Tester:
     def __init__(self) -> None:
         pass
         
-    def exec_general_test(self,images:List[MatLike]) -> None:
+    def exec_general_test(self,images:List[MatLike],nameFiles:list[str]) -> None:
         #Borrar el contenido de los directorios:
         ff.remove_images_dests()
         
@@ -57,7 +57,7 @@ class Tester:
             ff.save_images(imgs,extra=f"{idx}-",path=IMAGES_PATH+"g_cropped_mask/")
         
         #Pintamos las regiones finales:
-        text = det.draw_final_regions(images_final_regioned,cropped_mask_images)
+        text = det.draw_final_regions(images_final_regioned,cropped_mask_images,nameFiles)
         ff.save_images(images_final_regioned,cv2Const=cv2.COLOR_BGR2RGB,path=IMAGES_PATH+"h_final_regioned/")
 
         #Creamos el txt con las regiones finales listadas:

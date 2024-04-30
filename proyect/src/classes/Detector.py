@@ -237,12 +237,13 @@ class Detector:
     def draw_final_regions(
         self,
         dest_images:List[MatLike],
-        cropped_filter_images:List[tuple[List[tuple[MatLike,Rect]],int]]
+        cropped_filter_images:List[tuple[List[tuple[MatLike,Rect]],int]],
+        nameFiles:list[str]
     ) -> str:
         string = ''
         for tuple,idx in cropped_filter_images:
             for _,reg in tuple:
                 x,y,w,h=reg
                 cv2.rectangle(dest_images[idx],(x,y),(x+w,y+h),COLOR_BORDER,THICKNESS)
-                string = string + str(idx) + ';' + str(x) + ';' + str(y) + ';' + str(x+w) + ';' + str(y+h)  + '\n'                
+                string = string + nameFiles[idx] + ';' + str(x) + ';' + str(y) + ';' + str(x+w) + ';' + str(y+h)  + '\n'                
         return string
