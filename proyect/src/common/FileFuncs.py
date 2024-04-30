@@ -33,9 +33,9 @@ def save_images(
 def read_images(
     path:str=IMAGES_PATH+"test_selected/",
     start:int=0,
-    end:int=19,
+    end:int=20,
     cv2Const:int=cv2.COLOR_BGR2RGB
-) -> list[MatLike]:
+) -> tuple[list[MatLike],list[str]]:
     """
     Reads a list of images from the specified path.
 
@@ -59,10 +59,11 @@ def read_images(
     list[MatLike]
         A list of images read from the specified path.
     """
-    return [
+    return ([
         cv2.cvtColor(cv2.imread(os.path.join(path,file)),cv2Const) 
         for file in os.listdir(path)
-    ][start:end]
+    ][start:end],
+    [file for file in os.listdir(path)])
 
 def remove_directory_content(
     path:str

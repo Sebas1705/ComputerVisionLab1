@@ -4,6 +4,6 @@ from settings import *
 
 if __name__ == "__main__":
     
-    images = ff.read_images()
+    images,nameFiles = ff.read_images()
     tester: Tester = Tester()
-    tester.exec_general_test(images)
+    tester.exec_general_test(images,nameFiles)
