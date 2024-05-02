@@ -1,11 +1,10 @@
 from functools import lru_cache
-from typing import List, Sequence
+from typing import List
 from cv2.typing import Rect
 import cv2
 from cv2.typing import MatLike
 import numpy as np
 from settings import *
-import common.FileFuncs as ff
 
 class Detector:
     
@@ -34,7 +33,7 @@ class Detector:
             max_variation=MAX_VARIATION, 
             min_diversity=MIN_DIVERSITY
         )
-    
+        
     def improve_contrast(
         self,
         images: List[MatLike]
@@ -49,7 +48,7 @@ class Detector:
         images: List[MatLike]
             The list of images to improve
         """
-        for i in range(self.__nImages):
+        for i in range(len(images)):
             images[i] = cv2.equalizeHist(images[i])
 
     @property
