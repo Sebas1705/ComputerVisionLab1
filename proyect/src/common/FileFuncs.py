@@ -3,7 +3,7 @@ from typing import List
 import cv2
 from cv2.typing import MatLike
 import shutil
-from settings import GLOBAL_PATH, IMAGES_PATH
+from settings import IMAGES_PATH
 
 
 def save_images(
@@ -61,6 +61,7 @@ def read_images(
     """
     return ([
         cv2.cvtColor(cv2.imread(os.path.join(path,file)),cv2Const) 
+        if cv2Const is not None else cv2.imread(os.path.join(path,file))
         for file in os.listdir(path)
     ][start:end],
     [file for file in os.listdir(path)])
@@ -95,6 +96,7 @@ def remove_images_dests() -> None:
     remove_directory_content(path=IMAGES_PATH+"f_cropped")
     remove_directory_content(path=IMAGES_PATH+"g_cropped_mask/")
     remove_directory_content(path=IMAGES_PATH+"h_final_regioned/")
+    remove_directory_content(path=IMAGES_PATH+"i_final_cropped/")
 
 def create_txt(path:str,text:str):    
     """
