@@ -96,7 +96,6 @@ class Tester:
         images = images_temp
         
         nor = Normalizer(images)
-        nor.umbralize()
         nor.clahe_apply()
         
         ff.save_images(nor.images,IMAGES_PATH+"j_improve_images/",cv2Const=cv2.COLOR_BGR2RGB)
