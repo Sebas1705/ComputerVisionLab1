@@ -16,20 +16,5 @@ class Normalizer:
     ) -> None:
         for i in range(self.__nImages):
             self.images[i] = cv2.cvtColor(self.images[i], cv2.COLOR_BGR2GRAY)
-            clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
+            clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(4, 2))
             self.images[i] = clahe.apply(self.images[i])
-            
-    def equalize(
-        self
-    ) -> None:
-        for i in range(self.__nImages):
-            self.images[i] = cv2.cvtColor(self.images[i], cv2.COLOR_BGR2GRAY)
-            self.images[i] = cv2.equalizeHist(self.images[i])
-            self.images[i] = cv2.cvtColor(self.images[i], cv2.COLOR_GRAY2BGR)
-            
-    def umbralize(
-        self
-    ) -> None:
-        for i in range(self.__nImages):
-            self.images[i] = cv2.cvtColor(self.images[i], cv2.COLOR_BGR2GRAY)
-            self.images[i] = cv2.adaptiveThreshold(self.images[i], 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2)
