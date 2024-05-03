@@ -97,5 +97,6 @@ class Tester:
         
         nor = Normalizer(images)
         nor.clahe_apply()
+        nor.corregir_perspectiva()
         
         ff.save_images(nor.images,IMAGES_PATH+"j_improve_images/",cv2Const=cv2.COLOR_BGR2RGB)
