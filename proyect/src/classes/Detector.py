@@ -239,6 +239,25 @@ class Detector:
         cropped_filter_images:List[tuple[List[tuple[MatLike,Rect]],int]],
         nameFiles:list[str]
     ) -> str:
+        """
+        Draws the final bounding boxes on the images.
+
+        Parameters:
+        -----------
+        self : Detector
+            The instance of the Detector class.
+        dest_images : List[MatLike]
+            The list of destination images.
+        cropped_filter_images : List[tuple[List[tuple[MatLike, Rect]], int]]
+            The list of cropped and filtered images.
+        nameFiles : list[str]
+            The list of filenames.
+
+        Returns:
+        --------
+        str
+            A string containing the coordinates of the bounding boxes.
+        """
         string = ''
         for tuple,idx in cropped_filter_images:
             for _,reg in tuple:

@@ -1,4 +1,5 @@
 import os
+import numpy as np
 
 #---FileFuncs:
 GLOBAL_PATH = os.path.abspath(__file__).replace("\\settings.py","")+"/../../"
@@ -35,3 +36,21 @@ THICKNESS = 1
 
 #Cropped:
 CROPPED_TAM = (160,80)
+
+#---Normalizer:
+
+#CLAHE:
+CLIP_LIMIT = 2.0
+TITLE_GRID_SIZE = (4,2)
+
+#CANNY:
+THREASHOLD1 = 50
+THREASHOLD2 = 150
+APERTURE_SIZE = 3
+
+#HOUGHLINESP:
+RHO = 1
+THETA = np.pi/180
+THREASHOLD = 100
+MIN_LINE_LENGTH = 40
+MAX_LINE_GAP = 10
