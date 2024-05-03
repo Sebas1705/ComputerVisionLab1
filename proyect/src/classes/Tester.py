@@ -20,6 +20,19 @@ class Tester:
         nameFiles:list[str]
     ) -> List[tuple[List[MatLike],int]]:
         
+        """
+        This function performs a series of operations on a list of images to detect and crop specific regions.
+        It also saves intermediate and final results to the specified directories.
+
+        Parameters:
+        - images (List[MatLike]): A list of input images.
+        - nameFiles (list[str]): A list of file names corresponding to the input images.
+
+        Returns:
+        - final_croppeds (List[tuple[List[MatLike],int]]): A list of tuples, where each tuple contains a list of cropped images and an index.
+        """
+        
+        
         #Borrar el contenido de los directorios:
         ff.remove_images_dests()
         
@@ -85,7 +98,16 @@ class Tester:
     def exec_normalizer_test(
         self,
         images: List[tuple[List[MatLike],int]]
-    )->List[MatLike]:
+    )-> None:
+        
+        """
+        This function performs normalization operations on a list of images.
+        It applies Contrast Limited Adaptive Histogram Equalization (CLAHE) and perspective correction.
+        The processed images are saved to a specified directory.
+
+        Parameters:
+        - images (List[tuple[List[MatLike],int]]): A list of tuples, where each tuple contains a list of images and an index.
+        """
         
         ff.remove_directory_content(IMAGES_PATH+"j_improve_images/")
         
@@ -97,6 +119,6 @@ class Tester:
         
         nor = Normalizer(images)
         nor.clahe_apply()
-        nor.corregir_perspectiva()
+        nor.perspective_correct()
         
         ff.save_images(nor.images,IMAGES_PATH+"j_improve_images/",cv2Const=cv2.COLOR_BGR2RGB)
