@@ -223,12 +223,12 @@ class Detector:
                 mask = cv2.inRange(hsv_cropped,self.lower_blue,self.upper_blue)
                 bitwise = cv2.cvtColor(cv2.cvtColor(cv2.bitwise_and(hsv_cropped,hsv_cropped,mask=mask),cv2.COLOR_HSV2BGR),cv2.COLOR_BGR2RGB)
                 gris = cv2.cvtColor(bitwise, cv2.COLOR_BGR2GRAY)
-                # Contar los píxeles negros (píxeles con valor 0)
-                total_pixeles = gris.shape[0] * gris.shape[1]
-                pxeles_negros = total_pixeles - cv2.countNonZero(gris)
-                # Calcular el porcentaje de píxeles negros
-                porcentaje = (pxeles_negros / total_pixeles) * 100
-                if porcentaje < 13:
+                # Count black pixels (value 0)
+                total_pixels = gris.shape[0] * gris.shape[1]
+                black_pixels = total_pixels - cv2.countNonZero(gris)
+                # Calculate percentage of black pixels
+                percentage = (black_pixels / total_pixels) * 100
+                if percentage < 13:
                     croppeds_image.append((bitwise,region))
             cropped_mask.append((croppeds_image,idx))
         return cropped_mask
