@@ -38,15 +38,15 @@ class Normalizer:
         self
     ) -> None:
         for i in range(self.__nImages):
-            # Aplicar filtro de Canny para detectar bordes
-            bordes = cv2.Canny(self.images[i],THREASHOLD1,THREASHOLD2,apertureSize=APERTURE_SIZE)
-            # Detectar líneas utilizando la transformada de Hough
-            lineas = cv2.HoughLinesP(bordes,RHO,THETA,THREASHOLD,minLineLength=MIN_LINE_LENGTH, maxLineGap=MAX_LINE_GAP)
-            if lineas is not None:
-                # Calcular el ángulo promedio de las líneas detectadas
-                angulo_promedio = np.mean([np.arctan2(y2 - y1, x2 - x1) for line in lineas for x1, y1, x2, y2 in line])
-                # Rotar la imagen según el ángulo promedio
-                (alto, ancho) = self.images[i].shape[:2]
-                centro = (ancho // 2, alto // 2)
-                matriz_rotacion = cv2.getRotationMatrix2D(centro, np.degrees(angulo_promedio), 1.0)
-                self.images[i] = cv2.warpAffine(self.images[i], matriz_rotacion, (ancho, alto), flags=cv2.INTER_CUBIC, borderMode=cv2.BORDER_REPLICATE)
+            # Apply Canny filter to detect edges
+            edges = cv2.Canny(self.images[i],THREASHOLD1,THREASHOLD2,apertureSize=APERTURE_SIZE)
+            # Detect lines using Hough transform
+            lines = cv2.HoughLinesP(edges,RHO,THETA,THREASHOLD,minLineLength=MIN_LINE_LENGTH, maxLineGap=MAX_LINE_GAP)
+            if lines is not None:
+                # Calculate average angle of detected lines
+                average_angle = np.mean([np.arctan2(y2 - y1, x2 - x1) for line in lines for x1, y1, x2, y2 in line])
+                # Rotate image by the average angle
+                (height, width) = self.images[i].shape[:2]
+                center = (width // 2, height // 2)
+                rotation_matrix = cv2.getRotationMatrix2D(center, np.degrees(average_angle), 1.0)
+                self.images[i] = cv2.warpAffine(self.images[i], rotation_matrix, (width, height), flags=cv2.INTER_CUBIC, borderMode=cv2.BORDER_REPLICATE)
