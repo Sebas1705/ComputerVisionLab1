@@ -33,43 +33,43 @@ class Tester:
         """
         
         
-        #Borrar el contenido de los directorios:
+        #Clear output directories:
         ff.remove_images_dests()
         
-        #Copiar las imagenes:
+        #Copy images:
         images_final_regioned: List[MatLike] = [img.copy() for img in images]
         
-        #Crear el detector y mejorar el contraste:
+        #Create detector and improve contrast:
         det: Detector = Detector(images)
         
-        #Mejorar las imagenes en grises
+        #Enhance grayscale images
         ff.save_images(det.gray_images,path=IMAGES_PATH+"a_gray_before/")
         det.improve_contrast(det.gray_images)
         ff.save_images(det.gray_images,path=IMAGES_PATH+"b_gray_after/")
         
-        #Recoger las regiones:
+        #Collect regions:
         regions = det.list_images_regions
         img_draws: List[MatLike] = det.draw_regions(regions)
         ff.save_images(img_draws,cv2Const=cv2.COLOR_BGR2RGB,path=IMAGES_PATH+"c_regioned/")
         
-        #Agrupar las regiones:
+        #Group regions:
         regions = det.groupped_images_regions
         img_draws: List[MatLike] = det.draw_regions(regions)
         ff.save_images(img_draws,cv2Const=cv2.COLOR_BGR2RGB,path=IMAGES_PATH+"d_groupped_regioned/")
                 
-        #Obtener, filtrar y dibujar las regiones en una copia:
+        #Filter and draw regions on a copy:
         filter_regions: List[tuple[List[Rect],int]] = det.filter_images_regions
         img_draws = det.draw_regions(filter_regions)
         ff.save_images(img_draws,cv2Const=cv2.COLOR_BGR2RGB,path=IMAGES_PATH+"e_filter_regioned/")
         
         
-        #Recortar las regiones y guardarlas:
+        #Crop regions and save them:
         cropped_images: List[tuple[List[tuple[MatLike,Rect]],int]] = det.crop_regions(filter_regions)
         for crops,idx in cropped_images:
             imgs: List[MatLike] = [img for img,_ in crops]
             ff.save_images(imgs,cv2Const=cv2.COLOR_BGR2RGB,extra=f"{idx}-",path=IMAGES_PATH+"f_cropped/")
             
-        #Aplicamos mascara:
+        #Apply colour mask:
         reg_subpanels: List[tuple[List[Rect],int]] = []
         cropped_mask_images: List[tuple[List[tuple[MatLike,Rect]],int]] = det.apply_filter_cropped(cropped_images)
         for crops_mask,idx in cropped_mask_images:
@@ -77,19 +77,19 @@ class Tester:
             reg_subpanels.append(([reg for _,reg in crops_mask],idx))
             ff.save_images(imgs,extra=f"{idx}-",path=IMAGES_PATH+"g_cropped_mask/")
         
-        #Pintamos las regiones finales:
+        #Draw final bounding boxes:
         text = det.draw_final_regions(images_final_regioned,cropped_mask_images,nameFiles)
         ff.save_images(images_final_regioned,cv2Const=cv2.COLOR_BGR2RGB,path=IMAGES_PATH+"h_final_regioned/")
 
-        #Creamos el txt con las regiones finales listadas:
+        #Write final region coordinates to text file:
         ff.create_txt(FILES_PATH+"exit.txt",text)
         
-        #filtrar regiones y obtener paneles:
+        #Filter regions and extract panels:
         final_croppeds:List[tuple[List[MatLike],int]]=[]
         for crops,idx in det.crop_regions(reg_subpanels):
             final_croppeds.append(([img for img,_ in crops],idx))
             
-        #Guardar los recortes finales:
+        #Save final crops:
         for imgs,idx in final_croppeds:
             ff.save_images(imgs,cv2Const=cv2.COLOR_BGR2RGB,extra=f"{idx}-",path=IMAGES_PATH+"i_final_cropped/")
             
