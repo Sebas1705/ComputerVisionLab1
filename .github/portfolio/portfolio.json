@@ -1,0 +1,11 @@
+{
+  "accent": "#0F766E",
+  "icon_alt": {
+    "en": "Computer Vision Labs icon: the letters CV in white on a teal rounded square",
+    "es": "Icono de Computer Vision Labs: las letras CV en blanco sobre un cuadrado redondeado verde azulado"
+  },
+  "banner_alt": {
+    "en": "Computer Vision Labs banner: the monogram icon, the tagline \"Road-sign detection and OCR with OpenCV\" and the stack (Python, OpenCV, Machine Learning, scikit-learn)",
+    "es": "Banner de Computer Vision Labs: el icono con monograma, el lema \"Detección de señales de tráfico y OCR con OpenCV\" y el stack (Python, OpenCV, Machine Learning, scikit-learn)"
+  }
+}
