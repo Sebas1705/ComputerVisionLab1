@@ -78,6 +78,8 @@ def remove_directory_content(
         The path of the directory to be emptied.
     """
     for file in os.listdir(path):
+        if file == ".gitkeep":
+            continue
         path_complete = os.path.join(path,file)
         if os.path.isfile(path_complete):
             os.remove(path_complete)

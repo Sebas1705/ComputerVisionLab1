@@ -50,7 +50,7 @@ j_improve_images/   CLAHE contrast + Hough perspective correction
 
 ```
 Practica1VisionArtificial/
-├── proyect/
+├── project/
 │   ├── src/
 │   │   ├── classes/
 │   │   │   ├── Detector.py       # MSER detection, grouping, filtering, cropping, HSV masking
@@ -60,26 +60,54 @@ Practica1VisionArtificial/
 │   │   │   └── FileFuncs.py      # Image I/O helpers
 │   │   ├── settings.py           # All tunable constants (MSER params, CLAHE, Canny, Hough)
 │   │   └── main.py               # Entry point
-│   ├── images/                   # Intermediate results (a_gray_before → j_improve_images)
-│   ├── files/                    # Output text files (bounding box coordinates)
+│   ├── images/
+│   │   ├── test_selected/        # Sample input images (8 of the 20 selected test images)
+│   │   └── a_gray_before/ … j_improve_images/   # Pipeline outputs (empty, regenerated on run)
+│   ├── files/                    # Ground-truth annotations, detections and IoU comparison
 │   └── .gitignore
-├── imagenesTest/                 # Raw input test images (102 images)
-├── imagenesResultado/            # Reference result images
+├── imagenesResultado/            # Output folder for notebook_PracticaObligatoria1.ipynb
 ├── notebook_PracticaObligatoria1.ipynb   # Jupyter exploration notebook
+├── p1_test0.ipynb                # Experiments (HSV masking, perspective correction)
 └── README.md
 ```
+
+---
+
+## Dataset
+
+The input images are road scenes taken from a car, provided by the course
+(*Visión Artificial*, Computer Engineering, Universidad Rey Juan Carlos, 2023/24) as its
+test image collection. That collection is not redistributed here.
+
+To keep the repository small, only a sample of **8 images** is versioned in
+`project/images/test_selected/` (`00000`, `00002`, `00005`, `00011`, `00012`, `00016`,
+`00017`, `00018`; `00000` contains no sign panel and is kept as a negative example).
+They keep their original names so they still match the annotations in `project/files/`.
+
+- `project/files/salida_anotacion.csv` — ground truth for the 20 selected images, annotated
+  with [VGG Image Annotator](https://www.robots.ox.ac.uk/~vgg/software/via/).
+- `project/files/correspondencia.txt` — mapping from the 20 selected images to the indices of
+  the original course test set.
+
+To run on the full set, copy the course test images into `project/images/test_selected/`
+(the root-level `imagenesTest/` folder used in earlier versions is git-ignored).
+
+The original assignment statement (PDF) was removed because it is course material and is
+not ours to redistribute. Pipeline outputs (`a_gray_before` … `j_improve_images`,
+`imagenesResultado/`) are no longer versioned; run the pipeline to regenerate them.
+Older versions of the repository still contain the full image set in its history.
 
 ---
 
 ## Running
 
 ```bash
-cd proyect/src
+cd project/src
 python main.py
 ```
 
-Reads images from `proyect/images/test_selected/`, runs the full detection pipeline, and saves
-all intermediate results to the `proyect/images/` subdirectories.
+Reads images from `project/images/test_selected/`, runs the full detection pipeline, and saves
+all intermediate results to the `project/images/` subdirectories.
 
 ---
 
