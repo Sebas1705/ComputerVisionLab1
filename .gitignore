@@ -14,3 +14,12 @@ env/
 # OS
 .DS_Store
 Thumbs.db
+
+# Notebook outputs (notebook_PracticaObligatoria1.ipynb)
+imagenesResultado/*
+!imagenesResultado/.gitkeep
+imagenesfinales/
+recortes/
+
+# Full test dataset (provided by the course, not redistributed here)
+imagenesTest/
